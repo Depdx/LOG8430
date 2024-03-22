@@ -1,4 +1,8 @@
-# TP3 LOG8430 - Benchmark de performance
+# TP3 LOG8430 - Performance Benchmark
+
+# Installation
+Need to open the devcontainer, everything takes place in that container
+
 
 # MongoDB
 ## Start MongoDB
