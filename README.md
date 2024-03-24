@@ -5,6 +5,11 @@ Need to open the devcontainer, everything takes place in that container
 
 
 # MongoDB
+
+## deployement
+
+
+
 ## Start MongoDB
 ```bash
 docker run --name mongodb1 -p 27017:27017 -d mongodb/mongodb-community-server:latest
@@ -18,6 +23,11 @@ cd ycsb-0.17.0
 ```
 
 # Redis
+
+## deployement
+
+https://redis.io/docs/management/scaling/#create-a-redis-cluster
+
 ## Start Redis
 ```bash
 docker run --name redis1 -p 6379:6379 -d redis
@@ -26,6 +36,6 @@ docker run --name redis1 -p 6379:6379 -d redis
 # run workload Redis
 ```bash
 cd ycsb-0.17.0
-./bin/ycsb load redis -s -P workloads/workloada -p "redis.host=127.0.0.1" -p "redis.port=6379" > outputLoad.txt
-./bin/ycsb run redis -s -P workloads/workloada -p "redis.host=127.0.0.1" -p "redis.port=6379" > outputRun.txt
+./bin/ycsb load redis -s -P workloads/workloada -p "redis.host=127.0.0.1" -p "redis.port=7000" -p "redis.cluster=true" > ../outputLoad.txt
+./bin/ycsb run redis -s -P workloads/workloada -p "redis.host=127.0.0.1" -p "redis.port=7000" -p "redis.cluster=true" > ../outputRun.txt
 ```

@@ -6,4 +6,4 @@ rm ycsb-${YCSB_VERSION}.tar.gz
 
 # pull database images
 docker pull mongodb/mongodb-community-server:latest
-docker pull redis
+docker pull redis:latest
