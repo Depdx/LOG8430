@@ -3,6 +3,7 @@ mongodb/*/data/
 mongodb/*/config/
 ycsb*/
 ycsb*
+output*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
