@@ -1,0 +1,17 @@
+services:
+  mongodb_node_0:
+    image: mongo:latest
+    container_name: mongodb_node_0
+    command: mongod --port 27017
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_node_0:/data/db
+      - ./config/mongodb_node_0:/data/configdb
+    networks:
+      - mongodb_cluster
+
+networks:
+  mongodb_cluster:
+    driver: bridge
