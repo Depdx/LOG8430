@@ -2,7 +2,8 @@ services:
   redis_node_0:
     build:
       context: .
-      dockerfile: redis_node.Dockerfile
+      dockerfile: dockerfiles/redis_node.Dockerfile
+    image: redis_node:latest
     environment:
         - REDIS_PORT=7000
         - REDIS_COM_PORT=17000
@@ -11,12 +12,11 @@ services:
       - "17000:17000"
     volumes:
       - ./data:/data
+      - ./scripts:/scripts
     networks:
       - node_cluster_network
   redis_node_1:
-    build:
-      context: .
-      dockerfile: redis_node.Dockerfile
+    image: redis_node:latest
     environment:
         - REDIS_PORT=7001
         - REDIS_COM_PORT=17001
@@ -27,12 +27,11 @@ services:
       - "17001:17001"
     volumes:
       - ./data:/data
+      - ./scripts:/scripts
     networks:
       - node_cluster_network
   redis_node_2:
-    build:
-      context: .
-      dockerfile: redis_node.Dockerfile
+    image: redis_node:latest
     environment:
         - REDIS_PORT=7002
         - REDIS_COM_PORT=17002
@@ -44,12 +43,14 @@ services:
       - "17002:17002"
     volumes:
       - ./data:/data
+      - ./scripts:/scripts
     networks:
       - node_cluster_network
   redis_cluster_bootstrap:
     build:
       context: .
-      dockerfile: redis_cluster_bootstrap.Dockerfile
+      dockerfile: dockerfiles/redis_cluster_bootstrap.Dockerfile
+    image: redis_cluster_bootstrap:latest
     depends_on:
       - redis_node_0
       - redis_node_1
@@ -58,6 +59,8 @@ services:
       - REDIS_NODE_0_PORT=7000
       - REDIS_NODE_1_PORT=7001
       - REDIS_NODE_2_PORT=7002
+    volumes:
+      - ./scripts:/scripts
     networks:
       - node_cluster_network
 

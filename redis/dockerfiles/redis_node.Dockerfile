@@ -10,9 +10,7 @@ EXPOSE ${REDIS_PORT}
 EXPOSE ${REDIS_COM_PORT}
 
 VOLUME [ "/data" ]
+VOLUME [ "/scripts" ]
+
 WORKDIR /data
-
-COPY "start_node.sh" "/start_node.sh"
-RUN chmod +x /start_node.sh
-
-CMD [ "/start_node.sh" ]
+CMD [ "sh", "-c", "chmod +x /scripts/start_node.sh && /scripts/start_node.sh" ]

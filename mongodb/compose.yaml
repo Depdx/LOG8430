@@ -1,0 +1,12 @@
+services:
+  mongodb_node_0:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - mongodb_cluster
+
+
+networks:
+  mongodb_cluster:
+    driver: bridge

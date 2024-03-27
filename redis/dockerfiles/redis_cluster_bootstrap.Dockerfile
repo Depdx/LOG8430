@@ -5,7 +5,6 @@ ENV REDIS_NODE_0_PORT 7000
 ENV REDIS_NODE_1_PORT 7001
 ENV REDIS_NODE_2_PORT 7002
 
-COPY "bootstrap_cluster.sh" "/bootstrap_cluster.sh"
-RUN chmod +x /bootstrap_cluster.sh
+VOLUME [ "/scipts" ]
 
-CMD [ "/bootstrap_cluster.sh" ]
+CMD [ "sh", "-c", "chmod +x /scripts/bootstrap_cluster.sh && /scripts/bootstrap_cluster.sh" ]
