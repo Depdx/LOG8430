@@ -1,0 +1,21 @@
+services:
+  redis_node_0:
+    build:
+      context: .
+      dockerfile: ../dockerfiles/node.Dockerfile
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7000
+        - REDIS_COM_PORT=17000
+    ports:
+      - "7000:7000"
+      - "17000:17000"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+
+networks:
+  node_cluster_network:
+    driver: bridge

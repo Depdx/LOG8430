@@ -22,10 +22,6 @@ cd ycsb-0.17.0
 
 https://redis.io/docs/management/scaling/#create-a-redis-cluster
 
-## Start Redis
-```bash
-docker run --name redis1 -p 6379:6379 -d redis
-```
 
 # run workload Redis
 ```bash

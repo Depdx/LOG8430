@@ -1,8 +1,29 @@
 services:
+  redis_cluster_bootstrap:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/bootstrap.Dockerfile
+    image: redis_cluster_bootstrap_5_nodes:latest
+    depends_on:
+      - redis_node_0
+      - redis_node_1
+      - redis_node_2
+      - redis_node_3
+      - redis_node_4
+    environment:
+      - REDIS_NODE_0_PORT=7000
+      - REDIS_NODE_1_PORT=7001
+      - REDIS_NODE_2_PORT=7002
+      - REDIS_NODE_3_PORT=7003
+      - REDIS_NODE_4_PORT=7004
+    volumes:
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
   redis_node_0:
     build:
       context: .
-      dockerfile: dockerfiles/node.Dockerfile
+      dockerfile: ../dockerfiles/node.Dockerfile
     image: redis_node:latest
     environment:
         - REDIS_PORT=7000
@@ -46,23 +67,42 @@ services:
       - ./scripts:/scripts
     networks:
       - node_cluster_network
-  redis_cluster_bootstrap:
-    build:
-      context: .
-      dockerfile: dockerfiles/bootstrap.Dockerfile
-    image: redis_cluster_bootstrap:latest
+  redis_node_3:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7003
+        - REDIS_COM_PORT=17003
     depends_on:
       - redis_node_0
       - redis_node_1
       - redis_node_2
-    environment:
-      - REDIS_NODE_0_PORT=7000
-      - REDIS_NODE_1_PORT=7001
-      - REDIS_NODE_2_PORT=7002
+    ports:
+      - "7003:7003"
+      - "17003:17003"
     volumes:
+      - ./data:/data
       - ./scripts:/scripts
     networks:
       - node_cluster_network
+  redis_node_4:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7004
+        - REDIS_COM_PORT=17004
+    depends_on:
+      - redis_node_0
+      - redis_node_1
+      - redis_node_2
+      - redis_node_3
+    ports:
+      - "7004:7004"
+      - "17004:17004"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+
 
 networks:
   node_cluster_network:
