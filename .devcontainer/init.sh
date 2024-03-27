@@ -4,6 +4,6 @@ curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/${
 tar -xvf ycsb-${YCSB_VERSION}.tar.gz
 rm ycsb-${YCSB_VERSION}.tar.gz
 
-# pull database images
-docker pull mongodb/mongodb-community-server:latest
-docker pull redis:latest
+# set script to executable
+chmod +x /workspaces/LOG8430/mongodb/start_cluster.sh
+chmod +x /workspaces/LOG8430/redis/start_cluster.sh

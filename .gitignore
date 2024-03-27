@@ -1,4 +1,6 @@
 redis/data/
+mongodb/*/data/
+mongodb/*/config/
 ycsb*/
 ycsb*
 

@@ -2,10 +2,13 @@ FROM "mcr.microsoft.com/devcontainers/base:bullseye"
 RUN apt update && apt upgrade
 
 #install java
-RUN apt install -y default-jre default-jdk maven
+RUN apt install -y \
+    git \
+    default-jre \
+    default-jdk \
+    maven \
+    python \
+    python3-pip \
+    netcat-traditional
 
-#install python
-RUN apt install -y python python3-pip
-
-# install YCSB
 ENV YCSB_VERSION 0.17.0

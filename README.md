@@ -9,12 +9,6 @@ Need to open the devcontainer, everything takes place in that container
 ## deployement
 
 
-
-## Start MongoDB
-```bash
-docker run --name mongodb1 -p 27017:27017 -d mongodb/mongodb-community-server:latest
-```
-
 ## run workload mongoDB
 ```bash
 cd ycsb-0.17.0

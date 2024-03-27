@@ -2,7 +2,7 @@ services:
   redis_node_0:
     build:
       context: .
-      dockerfile: dockerfiles/redis_node.Dockerfile
+      dockerfile: dockerfiles/node.Dockerfile
     image: redis_node:latest
     environment:
         - REDIS_PORT=7000
@@ -49,7 +49,7 @@ services:
   redis_cluster_bootstrap:
     build:
       context: .
-      dockerfile: dockerfiles/redis_cluster_bootstrap.Dockerfile
+      dockerfile: dockerfiles/bootstrap.Dockerfile
     image: redis_cluster_bootstrap:latest
     depends_on:
       - redis_node_0

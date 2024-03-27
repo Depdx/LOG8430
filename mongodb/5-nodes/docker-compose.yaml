@@ -1,0 +1,97 @@
+services:
+  router:
+    image: mongo:latest
+    container_name: router
+    command: mongos --port 27017 --configdb rs-config-server/configserver:27017 --bind_ip_all
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/router:/data/db
+      - ./config/router:/data/configdb
+    depends_on:
+      - configserver
+    networks:
+      - mongodb_cluster
+  configserver:
+    image: mongo:latest
+    container_name: configserver
+    command: mongod --configsvr --replSet rs-config-server --port 27017
+    ports:
+      - "27118:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/configserver:/data/db
+      - ./config/configserver:/data/configdb
+    depends_on:
+      - mongodb_node_0
+      - mongodb_node_1
+      - mongodb_node_2
+      - mongodb_node_3
+      - mongodb_node_4
+    networks:
+      - mongodb_cluster
+  mongodb_node_0:
+    image: mongo:latest
+    container_name: mongodb_node_0
+    command: mongod --shardsvr --port 27017 --replSet rs-shard-0
+    ports:
+      - "27119:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_node_0:/data/db
+      - ./config/mongodb_node_0:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_node_1:
+    image: mongo:latest
+    container_name: mongodb_node_1
+    command: mongod --shardsvr --port 27017 --replSet rs-shard-1
+    ports:
+      - "27120:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_node_1:/data/db
+      - ./config/mongodb_node_1:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_node_2:
+    image: mongo:latest
+    container_name: mongodb_node_2
+    command: mongod --shardsvr --port 27017 --replSet rs-shard-2
+    ports:
+      - "27121:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_node_2:/data/db
+      - ./config/mongodb_node_2:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_node_3:
+    image: mongo:latest
+    container_name: mongodb_node_3
+    command: mongod --shardsvr --port 27017 --replSet rs-shard-3
+    ports:
+      - "27122:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_node_3:/data/db
+      - ./config/mongodb_node_3:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_node_4:
+    image: mongo:latest
+    container_name: mongodb_node_4
+    command: mongod --shardsvr --port 27017 --replSet rs-shard-4
+    ports:
+      - "27123:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_node_4:/data/db
+      - ./config/mongodb_node_4:/data/configdb
+    networks:
+      - mongodb_cluster
+
+networks:
+  mongodb_cluster:
+    driver: bridge
