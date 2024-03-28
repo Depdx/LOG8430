@@ -1,6 +1,6 @@
 services:
   router:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: router
     command: mongos --port 27017 --configdb rs-config-server/configserver:27017 --bind_ip_all
     ports:
@@ -14,7 +14,7 @@ services:
     networks:
       - mongodb_cluster
   configserver:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: configserver
     command: mongod --configsvr --replSet rs-config-server --port 27017
     ports:
@@ -34,7 +34,7 @@ services:
     networks:
       - mongodb_cluster
   mongodb_node_0:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: mongodb_node_0
     command: mongod --shardsvr --port 27017 --replSet rs-shard-0
     ports:
@@ -46,7 +46,7 @@ services:
     networks:
       - mongodb_cluster
   mongodb_node_1:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: mongodb_node_1
     command: mongod --shardsvr --port 27017 --replSet rs-shard-1
     ports:
@@ -58,7 +58,7 @@ services:
     networks:
       - mongodb_cluster
   mongodb_node_2:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: mongodb_node_2
     command: mongod --shardsvr --port 27017 --replSet rs-shard-2
     ports:
@@ -70,7 +70,7 @@ services:
     networks:
       - mongodb_cluster
   mongodb_node_3:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: mongodb_node_3
     command: mongod --shardsvr --port 27017 --replSet rs-shard-3
     ports:
@@ -82,7 +82,7 @@ services:
     networks:
       - mongodb_cluster
   mongodb_node_4:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: mongodb_node_4
     command: mongod --shardsvr --port 27017 --replSet rs-shard-4
     ports:
@@ -94,7 +94,7 @@ services:
     networks:
       - mongodb_cluster
   mongodb_node_5:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: mongodb_node_5
     command: mongod --shardsvr --port 27017 --replSet rs-shard-5
     ports:
@@ -106,7 +106,7 @@ services:
     networks:
       - mongodb_cluster
   mongodb_node_6:
-    image: mongo:latest
+    image: mongo:5.0.26
     container_name: mongodb_node_6
     command: mongod --shardsvr --port 27017 --replSet rs-shard-6
     ports:

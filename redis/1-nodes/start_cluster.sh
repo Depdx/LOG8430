@@ -1,3 +1,4 @@
+sudo rm -rf data
 docker compose up -d
 
 # wait for the cluster to be up

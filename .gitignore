@@ -6,6 +6,7 @@ ycsb*
 output*.txt
 outputs/
 workloads/
+dataframes/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

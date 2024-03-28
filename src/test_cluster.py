@@ -1,7 +1,8 @@
 import os
 import pytest
+import pandas as pd
 from typing import Tuple, Generator
-from src import Workload
+from src import Workload, OutputReader, dfs
 
 @pytest.fixture(scope="class", autouse=True)
 def cluster_setup(request) -> Generator[dict, None, None]:
@@ -21,14 +22,14 @@ def cluster_setup(request) -> Generator[dict, None, None]:
 @pytest.mark.parametrize(
     "cluster_setup",
     [
-        ("1", "mongodb"),
-        ("3", "mongodb"),
+        # ("1", "mongodb"),
+        # ("3", "mongodb"),
         ("5", "mongodb"),
-        ("7", "mongodb"),
+        # ("7", "mongodb"),
         ("1", "redis"),
-        ("3", "redis"),
-        ("5", "redis"),
-        ("7", "redis"),
+        # ("3", "redis"),
+        # ("5", "redis"),
+        # ("7", "redis"),
     ],
     indirect=True,
 )
@@ -50,27 +51,51 @@ class TestCluster:
             num_nodes: int,
             database: str
         ) -> None:
+        global dfs
         workload = Workload(read_proportion=read_proportion, write_proportion=write_proportion)
         workload.create()
-        
+        reader = OutputReader()
+
         for i in range(10):
-            load_command, run_command = self._build_ycsb_commands(
+            load_command, run_command, output_file_path_load, output_file_path_run = self._build_ycsb_commands(
                 output_file_name=f"output_{read_proportion}_{write_proportion}_{i}",
                 workload=workload,
                 database=database,
                 num_nodes=num_nodes
             )
+            os.system("sleep 2")
             os.system(load_command)
+            os.system("sleep 2")
+            load_df_i = reader.read_output(
+                file_path=output_file_path_load,
+                database=database,
+                num_nodes=num_nodes,
+                i=i,
+                read_proportion=read_proportion,
+                write_proportion=write_proportion,
+            )
+            dfs["load_df"] = load_df_i if dfs["load_df"] is None else \
+                pd.concat([dfs["load_df"], load_df_i], axis=0, join="outer", ignore_index=True)
+            os.system("sleep 2")
             os.system(run_command)
-
-        workload.remove()
+            os.system("sleep 2")
+            run_df_i = reader.read_output(
+                file_path=output_file_path_run,
+                database=database,
+                num_nodes=num_nodes,
+                i=i,
+                read_proportion=read_proportion,
+                write_proportion=write_proportion,
+            )
+            dfs["run_df"] = run_df_i if dfs["run_df"] is None else \
+                pd.concat([dfs["run_df"], run_df_i], axis=0, join="outer", ignore_index=True)
+        workload.delete()
 
     def _build_ycsb_commands(
             self,
             *,
             output_file_name: str,
             output_dir: str = "outputs",
-            number_of_threads: int = 10,
             workload: Workload,
             database: str,
             num_nodes: int,
@@ -80,16 +105,18 @@ class TestCluster:
         if database == "mongodb":
             database_args = "mongodb-async"
         elif database == "redis":
-            database_args = "redis"
+            if num_nodes == 1:
+                database_args = "redis -p 'redis.host=127.0.0.1' -p 'redis.port=7000'"
+            else:
+                database_args = "redis -p 'redis.host=127.0.0.1' -p 'redis.port=7000' -p 'redis.cluster=true'"
 
-        os.makedirs(output_dir, exist_ok=True)
-        os.makedirs(f"{output_dir}/load", exist_ok=True)
-        os.makedirs(f"{output_dir}/run", exist_ok=True)
-        output_file_path_load = f"{output_dir}/load/{output_file_name}.txt"
-        output_file_path_run = f"{output_dir}/run/{output_file_name}_run.txt"
+        os.makedirs(f"{output_dir}/load/{database}/{num_nodes}", exist_ok=True)
+        os.makedirs(f"{output_dir}/run/{database}/{num_nodes}", exist_ok=True)
+        output_file_path_load = f"{output_dir}/load/{database}/{num_nodes}/{output_file_name}.txt"
+        output_file_path_run = f"{output_dir}/run/{database}/{num_nodes}/{output_file_name}.txt"
 
         ycsb_dir = [d for d in os.listdir(os.getcwd()) if d.startswith('ycsb')][0]
         binary_path = f"{os.getcwd()}/{ycsb_dir}/bin/ycsb"
-        load_command = f"{binary_path} load {database_args} -s -threads {number_of_threads} -P {workload.file_path} > {output_file_path_load}"
-        run_command = f"{binary_path} run {database_args} -s -threads {number_of_threads} -P {workload.file_path} > {output_file_path_run}"
-        return load_command, run_command
+        load_command = f"{binary_path} load {database_args} -s -P {workload.file_path} > '{output_file_path_load}'"
+        run_command = f"{binary_path} run {database_args} -s -P {workload.file_path} > '{output_file_path_run}'"
+        return load_command, run_command, output_file_path_load, output_file_path_run

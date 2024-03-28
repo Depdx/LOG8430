@@ -41,4 +41,4 @@ class Workload:
         """
         Deletes the workload file.
         """
-        os.system("rm -rf workloads")
+        os.system(f"rm -rf {self.file_path}")

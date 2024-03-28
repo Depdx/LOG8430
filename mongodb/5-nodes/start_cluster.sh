@@ -1,7 +1,9 @@
+sudo rm -rf data
+sudo rm -rf config
 docker compose up -d
 
 # wait for the cluster to be up
-sleep 20
+sleep 35
 
 # bootstrap the cluster
 echo "Bootstrapping the cluster"
