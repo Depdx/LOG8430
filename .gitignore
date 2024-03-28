@@ -4,6 +4,8 @@ mongodb/*/config/
 ycsb*/
 ycsb*
 output*.txt
+outputs/
+workloads/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

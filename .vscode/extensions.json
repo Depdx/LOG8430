@@ -4,6 +4,7 @@
         "ms-vscode-remote.vscode-remote-extensionpack",
         "ms-vscode-remote.remote-wsl",
         "ms-vscode-remote.remote-containers",
-        "ms-vscode.remote-server"
+        "ms-vscode.remote-server",
+        "ms-python.python"
     ]
 }
