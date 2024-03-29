@@ -9,6 +9,7 @@ def cluster_setup(request) -> Generator[dict, None, None]:
     num_nodes, database = request.param
     pwd = os.getcwd()
     os.chdir(f'{pwd}/{database}/{num_nodes}-nodes/')
+    os.system('./remove_cluster.sh')
     os.system('./start_cluster.sh')
     os.chdir(pwd)
 
@@ -22,24 +23,24 @@ def cluster_setup(request) -> Generator[dict, None, None]:
 @pytest.mark.parametrize(
     "cluster_setup",
     [
-        # ("1", "mongodb"),
-        # ("3", "mongodb"),
+        ("1", "mongodb"),
+        ("3", "mongodb"),
         ("5", "mongodb"),
-        # ("7", "mongodb"),
+        ("7", "mongodb"),
         ("1", "redis"),
-        # ("3", "redis"),
-        # ("5", "redis"),
-        # ("7", "redis"),
+        ("3", "redis"),
+        ("5", "redis"),
+        ("7", "redis"),
     ],
     indirect=True,
 )
 class TestCluster:
 
-    def test_ycsb_benchmark_100_read(self, cluster_setup: dict) -> None:
-        self.run_test_with_workload(read_proportion=1.0, write_proportion=0.0, **cluster_setup)
-
     def test_ycsb_benchmark_50_50(self, cluster_setup: dict) -> None:
         self.run_test_with_workload(read_proportion=0.5, write_proportion=0.5, **cluster_setup)
+
+    def test_ycsb_benchmark_100_read(self, cluster_setup: dict) -> None:
+        self.run_test_with_workload(read_proportion=1.0, write_proportion=0.0, **cluster_setup)
 
     def test_ycsb_benchmark_10_read_90_write(self, cluster_setup: dict) -> None:
         self.run_test_with_workload(read_proportion=0.1, write_proportion=0.9, **cluster_setup)
@@ -63,22 +64,23 @@ class TestCluster:
                 database=database,
                 num_nodes=num_nodes
             )
+            if i == 0:
+                status = os.system(load_command)
+                if status != 0:
+                    raise Exception("YCSB failed to run")
+                load_df_i = reader.read_output(
+                    file_path=output_file_path_load,
+                    database=database,
+                    num_nodes=num_nodes,
+                    i=i,
+                    read_proportion=read_proportion,
+                    write_proportion=write_proportion,
+                )
+                dfs["load_df"] = self._concat_dfs(load_df_i)
             os.system("sleep 2")
-            os.system(load_command)
-            os.system("sleep 2")
-            load_df_i = reader.read_output(
-                file_path=output_file_path_load,
-                database=database,
-                num_nodes=num_nodes,
-                i=i,
-                read_proportion=read_proportion,
-                write_proportion=write_proportion,
-            )
-            dfs["load_df"] = load_df_i if dfs["load_df"] is None else \
-                pd.concat([dfs["load_df"], load_df_i], axis=0, join="outer", ignore_index=True)
-            os.system("sleep 2")
-            os.system(run_command)
-            os.system("sleep 2")
+            status = os.system(run_command)
+            if status != 0:
+                raise Exception("YCSB failed to run")
             run_df_i = reader.read_output(
                 file_path=output_file_path_run,
                 database=database,
@@ -87,9 +89,16 @@ class TestCluster:
                 read_proportion=read_proportion,
                 write_proportion=write_proportion,
             )
-            dfs["run_df"] = run_df_i if dfs["run_df"] is None else \
-                pd.concat([dfs["run_df"], run_df_i], axis=0, join="outer", ignore_index=True)
+            dfs["run_df"] = self._concat_dfs(run_df_i)
         workload.delete()
+
+    def _concat_dfs(self, df:pd.DataFrame) -> pd.DataFrame:
+        global dfs
+
+        if dfs["run_df"] is None:
+            return df
+        df = pd.merge(dfs["run_df"], df, how="outer")
+        return df
 
     def _build_ycsb_commands(
             self,
@@ -103,7 +112,7 @@ class TestCluster:
         ) -> Tuple[str, str]:
         database_args = ""
         if database == "mongodb":
-            database_args = "mongodb-async"
+            database_args = "mongodb"
         elif database == "redis":
             if num_nodes == 1:
                 database_args = "redis -p 'redis.host=127.0.0.1' -p 'redis.port=7000'"

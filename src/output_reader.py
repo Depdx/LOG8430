@@ -29,13 +29,21 @@ class OutputReader:
         :param write_proportion: The proportion of write operations in the workload.
         """
         os.system(f"sed -i '1,/[OVERALL]/d' {file_path}")
-        df = pd.read_csv(file_path, sep=",")
-        df.columns = ['_'.join(col).strip() for col in df.columns.values]
+        df = pd.read_csv(file_path, sep=",", header=None)
+        df["headers"] = df.iloc[:,0] + df.iloc[:,1]
+        df = df.drop(columns=[0, 1])
+        df["values"] = df.iloc[:, 0]
+        df = df.drop(columns=[2])
         df = df.transpose()
+        df.columns = df.iloc[0]
+        df = df.iloc[1,:]
         df["database"] = database
         df["num_nodes"] = num_nodes
         df["i"] = i
         df["read_proportion"] = read_proportion
         df["write_proportion"] = write_proportion
         df["id"] = f"{i}-{read_proportion}-{write_proportion}-{num_nodes}-{database}"
+        df = df.reset_index().transpose()
+        df.columns = df.iloc[0, :]
+        df = df.iloc[1:, :].reset_index(drop=True)
         return df
