@@ -10,12 +10,32 @@ services:
       - redis_node_2
       - redis_node_3
       - redis_node_4
+      - redis_replica_node_0_0
+      - redis_replica_node_0_1
+      - redis_replica_node_1_0
+      - redis_replica_node_1_1
+      - redis_replica_node_2_0
+      - redis_replica_node_2_1
+      - redis_replica_node_3_0
+      - redis_replica_node_3_1
+      - redis_replica_node_4_0
+      - redis_replica_node_4_1
     environment:
       - REDIS_NODE_0_PORT=7000
       - REDIS_NODE_1_PORT=7001
       - REDIS_NODE_2_PORT=7002
       - REDIS_NODE_3_PORT=7003
       - REDIS_NODE_4_PORT=7004
+      - REDIS_REPLICA_NODE_0_0_PORT=7005
+      - REDIS_REPLICA_NODE_0_1_PORT=7006
+      - REDIS_REPLICA_NODE_1_0_PORT=7007
+      - REDIS_REPLICA_NODE_1_1_PORT=7008
+      - REDIS_REPLICA_NODE_2_0_PORT=7009
+      - REDIS_REPLICA_NODE_2_1_PORT=7010
+      - REDIS_REPLICA_NODE_3_0_PORT=7011
+      - REDIS_REPLICA_NODE_3_1_PORT=7012
+      - REDIS_REPLICA_NODE_4_0_PORT=7013
+      - REDIS_REPLICA_NODE_4_1_PORT=7014
     volumes:
       - ./scripts:/scripts
     networks:
@@ -102,7 +122,156 @@ services:
       - ./scripts:/scripts
     networks:
       - node_cluster_network
-
+  redis_replica_node_0_0:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7005
+        - REDIS_COM_PORT=17005
+    depends_on:
+      - redis_node_0
+    ports:
+      - "7005:7005"
+      - "17005:17005"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_0_1:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7006
+        - REDIS_COM_PORT=17006
+    depends_on:
+      - redis_node_0
+    ports:
+      - "7006:7006"
+      - "17006:17006"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_1_0:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7007
+        - REDIS_COM_PORT=17007
+    depends_on:
+      - redis_node_1
+    ports:
+      - "7007:7007"
+      - "17007:17007"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_1_1:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7008
+        - REDIS_COM_PORT=17008
+    depends_on:
+      - redis_node_1
+    ports:
+      - "7008:7008"
+      - "17008:17008"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_2_0:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7009
+        - REDIS_COM_PORT=17009
+    depends_on:
+      - redis_node_2
+    ports:
+      - "7009:7009"
+      - "17009:17009"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_2_1:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7010
+        - REDIS_COM_PORT=17010
+    depends_on:
+      - redis_node_2
+    ports:
+      - "7010:7010"
+      - "17010:17010"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_3_0:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7011
+        - REDIS_COM_PORT=17011
+    depends_on:
+      - redis_node_3
+    ports:
+      - "7011:7011"
+      - "17011:17011"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_3_1:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7012
+        - REDIS_COM_PORT=17012
+    depends_on:
+      - redis_node_3
+    ports:
+      - "7012:7012"
+      - "17012:17012"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_4_0:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7013
+        - REDIS_COM_PORT=17013
+    depends_on:
+      - redis_node_4
+    ports:
+      - "7013:7013"
+      - "17013:17013"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
+  redis_replica_node_4_1:
+    image: redis_node:latest
+    environment:
+        - REDIS_PORT=7014
+        - REDIS_COM_PORT=17014
+    depends_on:
+      - redis_node_4
+    ports:
+      - "7014:7014"
+      - "17014:17014"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+    networks:
+      - node_cluster_network
 
 networks:
   node_cluster_network:

@@ -1,5 +1,6 @@
 # set script to executable
 sudo find . -name *.sh -exec chmod +x {} \;
+sudo find . -name *.sh -exec dos2unix {} \;
 
 # install YCSB
 rm -rf ycsb-${YCSB_VERSION}
@@ -9,3 +10,4 @@ rm ycsb-${YCSB_VERSION}.tar.gz
 
 #install python dependencies
 pip install -r requirements.txt
+

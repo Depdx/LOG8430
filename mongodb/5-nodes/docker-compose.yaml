@@ -41,6 +41,9 @@ services:
       - ./scripts:/scripts
       - ./data/mongodb_node_0:/data/db
       - ./config/mongodb_node_0:/data/configdb
+    depends_on:
+      - mongodb_replica_node_0_0
+      - mongodb_replica_node_0_1
     networks:
       - mongodb_cluster
   mongodb_node_1:
@@ -53,6 +56,9 @@ services:
       - ./scripts:/scripts
       - ./data/mongodb_node_1:/data/db
       - ./config/mongodb_node_1:/data/configdb
+    depends_on:
+      - mongodb_replica_node_1_0
+      - mongodb_replica_node_1_1
     networks:
       - mongodb_cluster
   mongodb_node_2:
@@ -65,6 +71,9 @@ services:
       - ./scripts:/scripts
       - ./data/mongodb_node_2:/data/db
       - ./config/mongodb_node_2:/data/configdb
+    depends_on:
+      - mongodb_replica_node_2_0
+      - mongodb_replica_node_2_1
     networks:
       - mongodb_cluster
   mongodb_node_3:
@@ -77,6 +86,9 @@ services:
       - ./scripts:/scripts
       - ./data/mongodb_node_3:/data/db
       - ./config/mongodb_node_3:/data/configdb
+    depends_on:
+      - mongodb_replica_node_3_0
+      - mongodb_replica_node_3_1
     networks:
       - mongodb_cluster
   mongodb_node_4:
@@ -89,8 +101,129 @@ services:
       - ./scripts:/scripts
       - ./data/mongodb_node_4:/data/db
       - ./config/mongodb_node_4:/data/configdb
+    depends_on:
+      - mongodb_replica_node_4_0
+      - mongodb_replica_node_4_1
     networks:
       - mongodb_cluster
+  mongodb_replica_node_0_0:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_0_0
+    command: mongod --port 27017 --replSet rs-shard-0
+    ports:
+      - "27124:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_0_0:/data/db
+      - ./config/mongodb_replica_node_0_0:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_0_1:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_0_1
+    command: mongod --port 27017 --replSet rs-shard-0
+    ports:
+      - "27125:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_0_1:/data/db
+      - ./config/mongodb_replica_node_0_1:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_1_0:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_1_0
+    command: mongod --port 27017 --replSet rs-shard-1
+    ports:
+      - "27126:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_1_0:/data/db
+      - ./config/mongodb_replica_node_1_0:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_1_1:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_1_1
+    command: mongod --port 27017 --replSet rs-shard-1
+    ports:
+      - "27127:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_1_1:/data/db
+      - ./config/mongodb_replica_node_1_1:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_2_0:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_2_0
+    command: mongod --port 27017 --replSet rs-shard-2
+    ports:
+      - "27128:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_2_0:/data/db
+      - ./config/mongodb_replica_node_2_0:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_2_1:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_2_1
+    command: mongod --port 27017 --replSet rs-shard-2
+    ports:
+      - "27129:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_2_1:/data/db
+      - ./config/mongodb_replica_node_2_1:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_3_0:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_3_0
+    command: mongod --port 27017 --replSet rs-shard-3
+    ports:
+      - "27130:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_3_0:/data/db
+      - ./config/mongodb_replica_node_3_0:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_3_1:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_3_1
+    command: mongod --port 27017 --replSet rs-shard-3
+    ports:
+      - "27131:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_3_1:/data/db
+      - ./config/mongodb_replica_node_3_1:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_4_0:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_4_0
+    command: mongod --port 27017 --replSet rs-shard-4
+    ports:
+      - "27132:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_4_0:/data/db
+      - ./config/mongodb_replica_node_4_0:/data/configdb
+    networks:
+      - mongodb_cluster
+  mongodb_replica_node_4_1:
+    image: mongo:5.0.26
+    container_name: mongodb_replica_node_4_1
+    command: mongod --port 27017 --replSet rs-shard-4
+    ports:
+      - "27133:27017"
+    volumes:
+      - ./scripts:/scripts
+      - ./data/mongodb_replica_node_4_1:/data/db
+      - ./config/mongodb_replica_node_4_1:/data/configdb
 
 networks:
   mongodb_cluster:

@@ -3,7 +3,7 @@ sudo rm -rf config
 docker compose up -d
 
 # wait for the cluster to be up
-sleep 35
+sleep 55
 
 # bootstrap the cluster
 echo "Bootstrapping the cluster"

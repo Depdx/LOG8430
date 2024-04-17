@@ -28,7 +28,8 @@ class OutputReader:
         :param read_proportion: The proportion of read operations in the workload.
         :param write_proportion: The proportion of write operations in the workload.
         """
-        os.system(f"sed -i '1,/[OVERALL]/d' {file_path}")
+        if database == "mongodb":
+            os.system(f"sed -i '1,/[OVERALL]/d' {file_path}")
         df = pd.read_csv(file_path, sep=",", header=None)
         df["headers"] = df.iloc[:,0] + df.iloc[:,1]
         df = df.drop(columns=[0, 1])

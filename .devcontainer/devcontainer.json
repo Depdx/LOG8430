@@ -28,7 +28,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "./.devcontainer/init.sh"
+	"postCreateCommand": "dos2unix --allow-chown ./.devcontainer/init.sh && ./.devcontainer/init.sh"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
